@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+         body {
+            animation: fadeIn 0.5s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6e8efb, #a777e3); /* Gradient Background */
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+        }
+
+        /* Glassmorphism Container */
+        .home-container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 350px;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Welcome Heading */
+        .home-container h2 {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons Container */
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Modern Button Styles */
+        .buttons button {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Button Hover Effects */
+        .buttons button:hover {
+            background: rgba(255, 255, 255, 0.5);
+            color: #333;
+            transform: scale(1.05);
+        }
+
+        /* Hide buttons initially */
+        .hidden {
+            display: none;
+        }
+
+        /* Fade-in Keyframe Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="home-container">
+        <h2>Welcome</h2>
+        <div id="buttonsContainer" class="buttons">
+            <button id="eventsBtn" class="hidden" onclick="window.location.href='events.html'">View Events</button>
+            <button id="venueApprovalBtn" class="hidden" onclick="window.location.href='approval.html'">Approve Venues</button>
+            <button id="bookVenueBtn" class="hidden" onclick="window.location.href='venues.html'">Book Venue</button>
+            <button id="manageEventsBtn" class="hidden" onclick="window.location.href='events.html'">Manage Events</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let role = localStorage.getItem("role");
+
+            if (role === "student") {
+                document.getElementById("eventsBtn").classList.remove("hidden");
+            } else if (role === "admin") {
+                document.getElementById("venueApprovalBtn").classList.remove("hidden");
+            } else if (role === "Clubleader") {
+                document.getElementById("bookVenueBtn").classList.remove("hidden");
+                document.getElementById("manageEventsBtn").classList.remove("hidden");
+            } else {
+                alert("Unauthorized access. Please log in.");
+                window.location.href = "index.html";
+            }
+        });
+    </script>
+</body>
+</html>
