@@ -112,6 +112,12 @@
     </table>
 
     <script>
+        const role = localStorage.getItem("role");
+if (!role) {
+  alert("Please log in to access UniSync.");
+  window.location.href = "/";
+}
+
         async function loadVenues() {
             let response = await fetch("http://localhost:3000/venue-bookings");
             let venues = await response.json();

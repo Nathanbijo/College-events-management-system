@@ -168,6 +168,12 @@
     </table>
 
     <script>
+        const role = localStorage.getItem("role");
+if (!role) {
+  alert("Please log in to access UniSync.");
+  window.location.href = "/";
+}
+
         // Mapping of areas to venues
         const venueMapping = {
             "Main Block": ["Sunya Lab", "Multimedia hall", "Heisenberg Lab", "Quantum Lab", "Zuse Lab", "Ulysses Lab", "CCF Lab"],

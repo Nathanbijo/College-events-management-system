@@ -82,6 +82,7 @@
     <div id="navbar"></div>
 
 <script>
+    
   fetch("/css/components/navbar.html")
     .then(res => res.text())
     .then(html => document.getElementById("navbar").innerHTML = html);
@@ -99,7 +100,12 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            let role = localStorage.getItem("role");
+            const role = localStorage.getItem("role");
+if (!role) {
+  alert("Please log in to access UniSync.");
+  window.location.href = "/";
+}
+
 
             if (role === "student") {
                 document.getElementById("eventsBtn").classList.remove("hidden");
