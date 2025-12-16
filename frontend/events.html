@@ -313,8 +313,8 @@ async function deleteEvent(id) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
-    
-            alert(id ? "Event updated!" : "Event added!");
+            console.log(id ? "Event updated!" :"Event added successfully");
+
             document.getElementById("eventForm").reset();
             loadEvents();
         });
