@@ -101,7 +101,7 @@ body::before {
             let result = await response.json();
             if (result.success) {
                 localStorage.setItem("role", result.role);
-                window.location.href = "home.html";
+                window.location.href = "/home";
             } else {
                 alert("Invalid credentials");
             }
