@@ -79,6 +79,14 @@
     </style>
 </head>
 <body>
+    <div id="navbar"></div>
+
+<script>
+  fetch("/css/components/navbar.html")
+    .then(res => res.text())
+    .then(html => document.getElementById("navbar").innerHTML = html);
+</script>
+
     <div class="home-container">
         <h2>Welcome</h2>
         <div id="buttonsContainer" class="buttons">

@@ -98,6 +98,14 @@
     </style>
 </head>
 <body>
+    <div id="navbar"></div>
+
+<script>
+  fetch("/css/components/navbar.html")
+    .then(res => res.text())
+    .then(html => document.getElementById("navbar").innerHTML = html);
+</script>
+
     <h2>Available Venues</h2>
     <table id="venueInfoTable">
         <tr><th>Venue Name</th><th>Location</th><th>Equipment</th><th>Seating capacity</th></tr>
