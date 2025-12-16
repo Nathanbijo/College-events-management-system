@@ -1,0 +1,13 @@
+<nav class="top-nav">
+  <span class="app-title">Event Management Portal</span>
+  <div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<script>
+function logout() {
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+</script>

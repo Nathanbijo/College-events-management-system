@@ -1,8 +1,11 @@
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
+const path = require("path");
+
 
 const app = express();
+const PORT = 3000;
 app.use(express.json());
 app.use(cors());
 
@@ -29,6 +32,38 @@ db.run(`CREATE TABLE IF NOT EXISTS venues (
     venue TEXT, 
     status TEXT DEFAULT 'Pending'
 )`);
+
+// CSS
+app.use("/css", express.static(path.join(__dirname, "css")));
+
+// Icons
+app.use("/icons", express.static(path.join(__dirname, "frontend/icons")));
+
+/* =========================
+   FRONTEND ROUTES (UniSync)
+   ========================= */
+
+const FRONTEND = path.join(__dirname, "frontend");
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(FRONTEND, "index.html"));
+});
+
+app.get("/home", (req, res) => {
+  res.sendFile(path.join(FRONTEND, "home.html"));
+});
+
+app.get("/events", (req, res) => {
+  res.sendFile(path.join(FRONTEND, "events.html"));
+});
+
+app.get("/venues", (req, res) => {
+  res.sendFile(path.join(FRONTEND, "venues.html"));
+});
+
+app.get("/approval", (req, res) => {
+  res.sendFile(path.join(FRONTEND, "approval.html"));
+});
 
 app.post("/add-event", (req, res) => {
     let { name, date, time, venue, organizer, desc, type } = req.body;
@@ -175,3 +210,6 @@ async function deleteBooking(id) {
         loadVenues();
     }
 }
+app.listen(PORT, () => {
+  console.log(`✅ UniSync running at http://localhost:${PORT}`);
+});
