@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venue Booking</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+    animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 20px;
+    font-size: 18px; /* Increase default text size */
+}
+
+
+        h2 {
+    font-size: 28px; /* Increase size for major headings */
+    font-weight: bold; /* Make it stand out */
+    margin-bottom: 15px; /* Add spacing below */
+    text-transform: uppercase;
+        }
+
+        h3 {
+    font-size: 28px; /* Slightly smaller than h2 */
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+    background: #007bff;
+    color: white;
+    font-size: 18px; /* Increase the size */
+    padding: 14px; /* Add extra padding for spacing */
+    text-transform: uppercase; /* Optional: Make text uppercase */
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        tr:hover {
+            background: #e0e0e0;
+        }
+
+        td {
+    font-size: 16px; /* Increase table text size */
+    padding: 12px; /* Add spacing for better readability */
+}
+
+
+        .center {
+            text-align: center;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar"></div>
+
+<script>
+    fetch("/css/components/navbar.html")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("navbar").innerHTML = html;
+            const logoutBtn = document.getElementById("logoutBtn");
+            if (logoutBtn) logoutBtn.addEventListener("click", () => { localStorage.clear(); window.location.href = "/"; });
+        });
+</script>
+
+    <h2>Available Venues</h2>
+    <table id="venueInfoTable">
+        <tr><th>Venue Name</th><th>Location</th><th>Equipment</th><th>Seating capacity</th></tr>
+        <tr><td>Sunya Lab</td><td>Main Block</td><td>3D printer, Laser cutter, Vinyl cutter</td><td>20</td></tr>
+        <tr><td>Multimedia hall</td><td>Main Block</td><td>Projector, Speakers, Mic system</td><td>100</td></tr>
+        <tr><td>Heisenberg Lab</td><td>Main Block</td><td>Computing equipment,IoT equipment</td><td>77</td></tr>
+        <tr><td>Quantum Lab</td><td>Main Block</td><td>Computing equipment, Projector</td><td>75</td></tr>
+        <tr><td>Zuse Lab</td><td>Main Block</td><td>Computing equipment, Networking components</td><td>76</td></tr>
+        <tr><td>Ulysses Lab</td><td>Main Block</td><td>Computing equipment</td><td>35</td></tr>
+        <tr><td>CCF Lab</td><td>Main Block</td><td>Computing equipment</td><td>75</td></tr>
+        <tr><td>Gallery Hall</td><td>PG Block</td><td>Projector, Mic system, Speakers</td><td>300</td></tr>
+        <tr><td>Project Laboratory</td><td>KE Block</td><td>Welding machine, Hacksaw, Grinding machine</td><td>50</td></tr>
+        <tr><td>Language Lab</td><td>KE Block</td><td>Computing equipment, Headphones</td><td>75</td></tr>
+        <tr><td>Sycamore lab Phase 1</td><td>KE Block</td><td>Computing equipment</td><td>75</td></tr>
+        <tr><td>Sycamore lab Phase 2</td><td>KE Block</td><td>Computing equipment</td><td>75</td></tr>
+        <tr><td>CU Seminar Hall</td><td>KE Block</td><td>Projector</td><td>72</td></tr>
+        <tr><td>Conference Hall</td><td>KE Block</td><td>Projector, Mic system, Speakers</td><td>250</td></tr>
+        <tr><td>Auditorium</td><td>KE Block</td><td>Projector, Mic and speaker system, Displays, Lighting system</td><td>2500</td></tr>
+        <tr><td>Badminton Court</td><td>KE Block</td><td>Floodlight</td><td>Nil</td></tr>
+        <tr><td>Table tennis Court</td><td>KE Block</td><td>Floodlight</td><td>Nil</td></tr>
+        <tr><td>Basketball Court</td><td>Outdoor areas</td><td>Floodlight, Open ground</td><td>300</td></tr>
+        <tr><td>Volleyball Court</td><td>Outdoor areas</td><td>Floodlight, Open ground</td><td>Nil</td></tr>
+        <tr><td>Football Ground</td><td>Outdoor areas</td><td>Open ground</td><td>Nil</td></tr>
+        <tr><td>Cricket Ground</td><td>Outdoor areas</td><td>Floodlight, Open ground, Pavilion</td><td>Nil</td></tr>
+        <tr><td>Cricket Nets</td><td>Outdoor areas</td><td>Nets</td><td>Nil</td></tr>
+        <tr><td>Parking Gound</td><td>Outdoor areas</td><td>Open ground</td><td>Nil</td></tr>
+        <tr><td>Chavara Hall</td><td>Outdoor areas</td><td>Lighting system, Mic and speaker system, Displays</td><td>600</td></tr>
+        <tr><td>STEAG</td><td>Outdoor areas</td><td>Open space</td><td>Nil</td></tr>
+        <tr><td>The Bamboos</td><td>Outdoor areas</td><td>Open space</td><td>20</td></tr>
+    </table>
+
+    <h2>Book a Venue</h2>
+    <form id="venueForm">
+        <input type="text" id="eventName" placeholder="Event Name" required>
+        <input type="text" id="clubName" placeholder="Club Name" required>
+        
+        <label for="areaSelect">Select Area:</label>
+        <select id="areaSelect" required>
+            <option value="">-- Select Area --</option>
+            <option value="Main Block">Main Block</option>
+            <option value="PG Block">PG Block</option>
+            <option value="KE Block">KE Block</option>
+            <option value="Outdoor Areas">Outdoor Areas</option>
+        </select>
+
+        <label for="venueSelect">Select Venue:</label>
+        <select id="venueSelect" required>
+            <option value="">-- Select Venue --</option>
+        </select>
+
+        <input type="date" id="fromDate" required>
+        <input type="date" id="toDate" required>
+        <button type="submit" id="submitButton">Book Venue</button>
+
+    </form>
+
+    <h3>Booked Venues</h3>
+    <table id="venueTable">
+        <tr><th>Event</th><th>Club</th><th>From</th><th>To</th><th>Venue</th><th>Status</th><th>Actions</th></tr>
+    </table>
+
+    <script>
+        const role = localStorage.getItem("role");
+if (!role) {
+  alert("Please log in to access UniSync.");
+  window.location.href = "/";
+}
+
+        // Mapping of areas to venues
+        const venueMapping = {
+            "Main Block": ["Sunya Lab", "Multimedia hall", "Heisenberg Lab", "Quantum Lab", "Zuse Lab", "Ulysses Lab", "CCF Lab"],
+            "PG Block": ["Gallery Hall"],
+            "KE Block": ["Project Laboratory", "Language Lab",  "Sycamore lab Phase 1",  "Sycamore lab Phase 2",  "CU Seminar Hall",  "Conference Hall",  "Auditorium",  "Badminton Court",  "Table tennis Court"],
+            "Outdoor Areas": ["Basketball Court", "Volleyball Court", "Football Ground", "Cricket Ground", "Cricket Nets", "Parking Ground", "Chavara Hall", "STEAG", "The Bamboos"]
+        };
+
+        document.getElementById("areaSelect").addEventListener("change", function () {
+            const selectedArea = this.value;
+            const venueSelect = document.getElementById("venueSelect");
+
+            // Clear existing venue options
+            venueSelect.innerHTML = '<option value="">-- Select Venue --</option>';
+
+            if (selectedArea && venueMapping[selectedArea]) {
+                venueMapping[selectedArea].forEach(venue => {
+                    let option = document.createElement("option");
+                    option.value = venue;
+                    option.textContent = venue;
+                    venueSelect.appendChild(option);
+                });
+            }
+        });
+        let editingId = null; // Store the booking ID being edited
+
+function editBooking(id, eventName, clubName, venue, fromDate, toDate) {
+    // Fill the form with existing data
+    document.getElementById("eventName").value = eventName;
+    document.getElementById("clubName").value = clubName;
+    document.getElementById("venueSelect").value = venue;
+    document.getElementById("fromDate").value = fromDate;
+    document.getElementById("toDate").value = toDate;
+
+    editingId = id; // Store the current booking ID
+    document.getElementById("submitButton").textContent = "Update Booking"; // Change button text
+}
+
+
+async function deleteBooking(id) {
+    if (confirm("Are you sure you want to delete this booking?")) {
+        await fetch(`http://localhost:3000/delete-booking/${id}`, { method: "DELETE" });
+        alert("Booking deleted!");
+        loadVenues();
+    }
+}
+async function markBookedDates() {
+    let response = await fetch("http://localhost:3000/venue-bookings");
+    let venues = await response.json();
+
+    let bookedDatesByVenue = {}; // Object to store booked dates for each venue
+
+    venues.forEach(v => {
+        let from = new Date(v.from_date);
+        let to = new Date(v.to_date);
+        
+        if (!bookedDatesByVenue[v.venue]) {
+            bookedDatesByVenue[v.venue] = new Set();
+        }
+
+        for (let d = from; d <= to; d.setDate(d.getDate() + 1)) {
+            bookedDatesByVenue[v.venue].add(d.toISOString().split('T')[0]);
+        }
+    });
+
+    // When venue changes, update the date pickers
+    document.getElementById("venueSelect").addEventListener("change", function () {
+        let selectedVenue = this.value;
+        let bookedDates = bookedDatesByVenue[selectedVenue] || new Set();
+
+        document.querySelectorAll("input[type='date']").forEach(input => {
+            input.addEventListener("change", function () {
+                if (bookedDates.has(this.value)) {
+                    this.style.backgroundColor = "red";
+                    this.style.color = "white"; // Make text visible on red background
+                } else {
+                    this.style.backgroundColor = "white";
+                    this.style.color = "black";
+                }
+            });
+        });
+    });
+}
+
+
+markBookedDates();
+
+        async function loadVenues() {
+    let response = await fetch("http://localhost:3000/venue-bookings");
+    let venues = await response.json();
+    let table = document.getElementById("venueTable");
+
+    table.innerHTML = "<tr><th>Event</th><th>Club</th><th>From</th><th>To</th><th>Venue</th><th>Status</th><th>Actions</th></tr>";
+
+    venues.forEach(v => {
+        table.innerHTML += `<tr>
+            <td>${v.event_name}</td>
+            <td>${v.club_name}</td>
+            <td>${v.from_date}</td>
+            <td>${v.to_date}</td>
+            <td>${v.venue}</td>
+            <td>${v.status}</td>
+            <td>
+                <button onclick="editBooking(${v.id}, '${v.event_name}', '${v.club_name}', '${v.venue}', '${v.from_date}', '${v.to_date}')">Edit</button>
+                <button onclick="deleteBooking(${v.id})">Delete</button>
+            </td>
+        </tr>`;
+    });
+
+    markBookedDates();
+}
+
+
+document.getElementById("venueForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    let eventName = document.getElementById("eventName").value;
+    let clubName = document.getElementById("clubName").value;
+    let fromDate = document.getElementById("fromDate").value;
+    let toDate = document.getElementById("toDate").value;
+    let venue = document.getElementById("venueSelect").value;
+
+    if (!venue) {
+        alert("Please select a venue!");
+        return;
+    }
+
+    // Fetch existing bookings
+    let response = await fetch("http://localhost:3000/venue-bookings");
+    let venues = await response.json();
+
+    // Check if the selected venue is already booked in the given date range
+    let isAlreadyBooked = venues.some(v => {
+        return (
+            v.venue === venue &&
+            ((fromDate >= v.from_date && fromDate <= v.to_date) || 
+            (toDate >= v.from_date && toDate <= v.to_date) || 
+            (fromDate <= v.from_date && toDate >= v.to_date)) // Overlapping case
+        );
+    });
+
+    if (isAlreadyBooked) {
+        alert("Venue already booked for the selected dates!");
+        return; // Stop form submission
+    }
+
+    if (editingId) {
+        // Update existing booking
+        await fetch(`http://localhost:3000/edit-booking/${editingId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ event_name: eventName, club_name: clubName, from_date: fromDate, to_date: toDate, venue })
+        });
+
+        alert("Booking updated!");
+        editingId = null; // Reset editing mode
+        document.getElementById("submitButton").textContent = "Book Venue"; // Reset button text
+    } else {
+        // New Booking
+        await fetch("http://localhost:3000/book-venue", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ event_name: eventName, club_name: clubName, from_date: fromDate, to_date: toDate, venue })
+        });
+
+        alert("Venue booked successfully!");
+    }
+
+    document.getElementById("venueForm").reset(); // Clear form
+    loadVenues(); // Reload bookings
+});
+
+
+
+        loadVenues();
+    </script>
+</body>
+</html>
