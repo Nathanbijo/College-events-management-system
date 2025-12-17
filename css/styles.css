@@ -106,20 +106,21 @@ button:hover { background: #0056b3; }
 .badge-Arts { background: #e84393; }
 .badge-Workshop { background: #fdcb6e; }
 
-/* ===== Global Navbar ===== */
 .top-nav {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 56px;
-  background: rgba(0, 0, 0, 0.75);
+  height: var(--nav-height);
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(8px);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 8px 20px;
   z-index: 1000;
+  box-sizing: border-box;
+  overflow: visible;
 }
 
 .app-title {
@@ -184,12 +185,12 @@ button:hover { background: #0056b3; }
 
 /* Make room for the fixed navbar so page content isn't hidden behind it */
 :root {
-  --nav-height: 56px;
+  --nav-height: 64px; /* a little taller so controls aren't clipped */
 }
 
-body {
+html, body {
+  margin: 0;
   box-sizing: border-box;
-  padding-top: var(--nav-height);
 }
 
 /* Ensure nav internal sections align correctly */
@@ -207,7 +208,8 @@ body {
 /* Make logout button render fully and stay aligned */
 .logout-btn {
   line-height: 1;
-  padding: 6px 14px;
+  padding: 6px 10px;
+  margin: 0;
 }
 
 /* Spacer used when navbar is injected into pages */
