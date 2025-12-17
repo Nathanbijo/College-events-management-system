@@ -181,3 +181,37 @@ button:hover { background: #0056b3; }
   opacity: 0.85;
   margin-bottom: 10px;
 }
+
+/* Make room for the fixed navbar so page content isn't hidden behind it */
+:root {
+  --nav-height: 56px;
+}
+
+body {
+  box-sizing: border-box;
+  padding-top: var(--nav-height);
+}
+
+/* Ensure nav internal sections align correctly */
+.top-nav .nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.top-nav .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Make logout button render fully and stay aligned */
+.logout-btn {
+  line-height: 1;
+  padding: 6px 14px;
+}
+
+/* Spacer used when navbar is injected into pages */
+.nav-spacer {
+  height: var(--nav-height);
+  width: 100%;
+}

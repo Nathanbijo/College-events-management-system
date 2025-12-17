@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <style>
          body {
             animation: fadeIn 0.5s ease-in-out;
@@ -83,9 +83,13 @@
 
 <script>
     
-  fetch("/css/components/navbar.html")
-    .then(res => res.text())
-    .then(html => document.getElementById("navbar").innerHTML = html);
+    fetch("/css/components/navbar.html")
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("navbar").innerHTML = html;
+            const logoutBtn = document.getElementById("logoutBtn");
+            if (logoutBtn) logoutBtn.addEventListener("click", () => { localStorage.clear(); window.location.href = "/"; });
+        });
 </script>
 
     <div class="home-container">
