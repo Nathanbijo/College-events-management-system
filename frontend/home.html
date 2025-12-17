@@ -91,12 +91,28 @@
     <div class="home-container">
         <h2>Welcome to UniSync</h2>
 <p>University Event & Venue Coordination Platform</p>
-        <div id="buttonsContainer" class="buttons">
-            <button onclick="window.location.href='/events'">View Events</button>
-<button onclick="window.location.href='/approval'">Approve Venues</button>
-<button onclick="window.location.href='/venues'">Book Venue</button>
-<button onclick="window.location.href='/events'">Manage Events</button>
-        </div>
+        <div class="dashboard-grid">
+  <button id="eventsBtn" class="dash-card hidden" onclick="window.location.href='/events'">
+    <span class="icon">📅</span>
+    <span>View Events</span>
+  </button>
+
+  <button id="bookVenueBtn" class="dash-card hidden" onclick="window.location.href='/venues'">
+    <span class="icon">🏢</span>
+    <span>Book Venue</span>
+  </button>
+
+  <button id="manageEventsBtn" class="dash-card hidden" onclick="window.location.href='/events'">
+    <span class="icon">🛠️</span>
+    <span>Manage Events</span>
+  </button>
+
+  <button id="venueApprovalBtn" class="dash-card hidden" onclick="window.location.href='/approval'">
+    <span class="icon">🏛️</span>
+    <span>Approve Venues</span>
+  </button>
+</div>
+
     </div>
 
     <script>
