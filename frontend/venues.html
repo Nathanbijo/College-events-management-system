@@ -438,6 +438,113 @@
             renderBookingsTable();
         })();
 
+        /* ===== Mini datepicker bound to panelFrom / panelTo ===== */
+        (function(){
+            let activeCal = null;
+
+            function formatYMD(date){
+                const y = date.getFullYear();
+                const m = String(date.getMonth()+1).padStart(2,'0');
+                const d = String(date.getDate()).padStart(2,'0');
+                return `${y}-${m}-${d}`;
+            }
+
+            function buildCalendar(year, month, venueName){
+                const cal = document.createElement('div');
+                cal.className = 'mini-cal';
+
+                const head = document.createElement('div'); head.className='cal-head';
+                const prev = document.createElement('button'); prev.textContent='◀'; prev.style.border='none'; prev.style.background='transparent'; prev.style.cursor='pointer';
+                const next = document.createElement('button'); next.textContent='▶'; next.style.border='none'; next.style.background='transparent'; next.style.cursor='pointer';
+                const title = document.createElement('div'); title.textContent = new Date(year,month,1).toLocaleString(undefined,{month:'long',year:'numeric'});
+                head.appendChild(prev); head.appendChild(title); head.appendChild(next);
+
+                const grid = document.createElement('div'); grid.className='cal-grid';
+
+                // day of week headers
+                ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(dow=>{ const el=document.createElement('div'); el.className='dow'; el.textContent=dow; grid.appendChild(el); });
+
+                const first = new Date(year,month,1);
+                const start = new Date(first); start.setDate(first.getDate() - first.getDay());
+
+                for(let i=0;i<42;i++){
+                    const cur = new Date(start); cur.setDate(start.getDate()+i);
+                    const day = document.createElement('div'); day.className='day'; day.textContent = cur.getDate();
+                    const iso = formatYMD(cur);
+
+                    // mark days not in this month muted
+                    if (cur.getMonth() !== month) { day.style.opacity = '0.35'; }
+
+                    // mark booked if present for this venue
+                    const bookedSet = bookedDatesByVenue[venueName] || new Set();
+                    if (bookedSet.has(iso)) { day.classList.add('booked','disabled'); day.title = 'Booked'; }
+
+                    // attach click handler for selectable days
+                    day.addEventListener('click', (e)=>{
+                        if (day.classList.contains('disabled')) return;
+                        const input = cal.__boundInput;
+                        if (input) { input.value = iso; input.dispatchEvent(new Event('input',{bubbles:true})); hideCal(cal); }
+                    });
+
+                    grid.appendChild(day);
+                }
+
+                cal.appendChild(head); cal.appendChild(grid);
+
+                // navigation
+                prev.addEventListener('click', ()=>{ const d=new Date(year,month-1,1); const newCal = buildCalendar(d.getFullYear(), d.getMonth(), venueName); replaceCal(cal, newCal); });
+                next.addEventListener('click', ()=>{ const d=new Date(year,month+1,1); const newCal = buildCalendar(d.getFullYear(), d.getMonth(), venueName); replaceCal(cal, newCal); });
+
+                return cal;
+            }
+
+            function replaceCal(oldCal, newCal){
+                if (!oldCal || !oldCal.parentNode) return;
+                // preserve bound input
+                newCal.__boundInput = oldCal.__boundInput;
+                oldCal.parentNode.replaceChild(newCal, oldCal);
+                activeCal = newCal;
+            }
+
+            function hideCal(cal){ if (!cal) return; cal.remove(); activeCal = null; }
+
+            function showCalendarFor(input){
+                // ensure bookings loaded
+                const venue = document.getElementById('panelVenue').value || '';
+                const today = input.value ? new Date(input.value) : new Date();
+                const cal = buildCalendar(today.getFullYear(), today.getMonth(), venue);
+                cal.__boundInput = input;
+
+                // position
+                const rect = input.getBoundingClientRect();
+                cal.style.position = 'absolute';
+                cal.style.left = (rect.left + window.scrollX) + 'px';
+                cal.style.top = (rect.bottom + window.scrollY + 6) + 'px';
+
+                document.body.appendChild(cal);
+                activeCal = cal;
+            }
+
+            // attach to panel inputs
+            const fromInput = document.getElementById('panelFrom');
+            const toInput = document.getElementById('panelTo');
+
+            fromInput.addEventListener('focus', (e)=>{ showCalendarFor(fromInput); });
+            toInput.addEventListener('focus', (e)=>{ showCalendarFor(toInput); });
+
+            // hide on outside click
+            document.addEventListener('click', (e)=>{
+                if (!activeCal) return;
+                if (e.target.closest('.mini-cal')) return;
+                if (e.target === fromInput || e.target === toInput) return;
+                hideCal(activeCal);
+            });
+
+            // re-render when bookings change
+            const origLoadBookings = loadBookings;
+            loadBookings = async function(){ await origLoadBookings(); if (activeCal) { const bound = activeCal.__boundInput; hideCal(activeCal); showCalendarFor(bound); } };
+        })();
+
     </script>
 </body>
 </html>
