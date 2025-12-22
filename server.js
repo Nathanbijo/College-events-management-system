@@ -38,6 +38,8 @@ app.use("/css", express.static(path.join(__dirname, "css")));
 
 // Icons
 app.use("/icons", express.static(path.join(__dirname, "frontend/icons")));
+// Images used by frontend (backgrounds, etc.)
+app.use("/images", express.static(path.join(__dirname, "frontend/images")));
 
 /* =========================
    FRONTEND ROUTES (UniSync)
