@@ -20,7 +20,7 @@
 
         /* Grid that fills remaining space without causing page scroll */
         .grid-wrap{flex:1;overflow:auto;padding:6px}
-        .venue-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+        .venue-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
         .venue-grid h3{grid-column:1/-1;margin:0;padding:8px 6px;color:#0f172a;border-radius:6px}
 
         .venue-card{background:var(--card-bg);border-radius:12px;padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;transition:transform var(--transition),box-shadow var(--transition);position:relative}
@@ -72,8 +72,9 @@
         .bookings-modal{background:white;border-radius:12px;max-width:900px;width:92%;max-height:80vh;overflow:auto;padding:18px;box-shadow:0 20px 60px rgba(2,6,23,0.4);position:relative}
         .bookings-modal h3{margin-top:0}
         .bookings-modal table{width:100%;border-collapse:collapse}
-        .bookings-modal th{background:#f8fafc;padding:10px;text-align:left;border-bottom:1px solid #eee}
+        .bookings-modal th{background:#ff7a00;color:#fff;padding:10px;text-align:left;border-bottom:1px solid #eee}
         .bookings-modal td{padding:12px;border-bottom:1px solid #f1f5f9}
+        .bookings-modal .toggle-btn{background:#fff;border:1px solid #e6e6e6;padding:6px 8px;border-radius:8px;color:#111}
         .bookings-close{position:absolute;right:12px;top:8px;border:none;background:transparent;font-size:18px;cursor:pointer}
     </style>
 </head>
@@ -106,6 +107,7 @@
                 <input type="date" id="filterFrom" class="control" aria-label="From date">
                 <input type="date" id="filterTo" class="control" aria-label="To date">
                 <input type="number" id="minCapacity" class="control" placeholder="Min capacity" min="0" aria-label="Minimum capacity">
+                <button id="openBookingsBtn" class="toggle-btn" style="margin-left:auto">My Bookings</button>
             </div>
             <div id="filterSummary" style="font-size:13px;color:#374151;margin-top:6px">Showing 0 venues based on selected filters.</div>
 
@@ -114,44 +116,33 @@
             </div>
         </div>
 
-        <div class="right-col">
-            <div class="booking-panel" id="bookingPanel" aria-hidden="true">
-                <h3 id="panelTitle">Book Venue</h3>
-                <form id="panelForm">
-                    <label>Area</label>
-                    <input type="text" id="panelArea" readonly>
-                    <label>Venue</label>
-                    <input type="text" id="panelVenue" readonly>
-                    <label>Event name</label>
-                    <input type="text" id="panelEvent" required>
-                    <label>Club name</label>
-                    <input type="text" id="panelClub" required>
-                    <label>From</label>
-                    <input type="date" id="panelFrom" required>
-                    <label>To</label>
-                    <input type="date" id="panelTo" required>
+        
+    </div>
 
-                    <div id="panelNotice" class="notice" style="display:none"></div>
+    <!-- booking panel (moved out of right-column so grid can expand) -->
+    <div class="booking-panel" id="bookingPanel" aria-hidden="true" style="position:fixed;right:18px;top:80px;z-index:1800;max-width:420px">
+        <h3 id="panelTitle">Book Venue</h3>
+        <form id="panelForm">
+            <label>Area</label>
+            <input type="text" id="panelArea" readonly>
+            <label>Venue</label>
+            <input type="text" id="panelVenue" readonly>
+            <label>Event name</label>
+            <input type="text" id="panelEvent" required>
+            <label>Club name</label>
+            <input type="text" id="panelClub" required>
+            <label>From</label>
+            <input type="date" id="panelFrom" required>
+            <label>To</label>
+            <input type="date" id="panelTo" required>
 
-                    <div style="display:flex;gap:8px;margin-top:10px">
-                        <button type="submit" id="panelSubmit">Book</button>
-                        <button type="button" id="panelClose" class="toggle-btn">Close</button>
-                    </div>
-                </form>
+            <div id="panelNotice" class="notice" style="display:none"></div>
+
+            <div style="display:flex;gap:8px;margin-top:10px">
+                <button type="submit" id="panelSubmit">Book</button>
+                <button type="button" id="panelClose" class="toggle-btn">Close</button>
             </div>
-
-            <div class="bookings-collapsed">
-                <div style="display:flex;justify-content:space-between;align-items:center">
-                    <strong>My Bookings</strong>
-                    <button id="toggleBookings" class="toggle-btn">Show</button>
-                </div>
-                <div id="bookingsWrap" style="margin-top:10px;display:none;max-height:40vh;overflow:auto">
-                    <table id="venueTable" style="width:100%">
-                        <tr><th>Event</th><th>Club</th><th>From</th><th>To</th><th>Venue</th><th>Status</th><th>Actions</th></tr>
-                    </table>
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
 
     <script>
@@ -332,7 +323,7 @@
         });
 
         // Open bookings modal (replaces inline toggle)
-        document.getElementById('toggleBookings').addEventListener('click', async () => {
+        document.getElementById('openBookingsBtn').addEventListener('click', async () => {
             await loadBookings();
             showBookingsModal();
         });
@@ -436,6 +427,7 @@
         // Populate bookings table
         async function renderBookingsTable() {
             const table = document.getElementById('venueTable');
+            if (!table) return; // nothing to do if table location isn't present (we use modal table instead)
             table.innerHTML = '<tr><th>Event</th><th>Club</th><th>From</th><th>To</th><th>Venue</th><th>Status</th><th>Actions</th></tr>';
             currentBookings.forEach(b => {
                 const tr = document.createElement('tr');
