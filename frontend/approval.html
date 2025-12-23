@@ -172,6 +172,13 @@ if (!role) {
                 "Sunya Lab": "Main Building"
             };
 
+            const buildingIconMap = {
+                'KE Block': '🏛️',
+                'PG Block': '🖼️',
+                'Main Building': '🏫',
+                'Sunya Lab': '🧪'
+            };
+
             function formatDate(dStr) {
                 const d = new Date(dStr);
                 if (isNaN(d)) return dStr;
@@ -187,6 +194,7 @@ if (!role) {
                 const duration = `${formatDate(v.from_date)} → ${formatDate(v.to_date)}`;
                 const building = venueBuildingMap[v.venue] || 'Main Building';
 
+                const icon = buildingIconMap[building] || '📍';
                 const card = document.createElement('div');
                 card.className = 'request-card';
                 card.innerHTML = `
@@ -195,7 +203,7 @@ if (!role) {
                         <div class="status-badge">${v.status}</div>
                     </div>
                     <div class="card-body">
-                        <div class="card-left"><div class="avatar">🏛️</div></div>
+                        <div class="card-left"><div class="avatar">${icon}</div></div>
                         <div class="card-main">
                             <div class="event-name">${v.event_name}</div>
                             <div class="meta-row">

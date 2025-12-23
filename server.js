@@ -85,16 +85,28 @@ app.post("/add-event", (req, res) => {
 
 // Login API (Simple authentication)
 app.post("/login", (req, res) => {
-    const users = {
-        "student": "rajagiri123",
-        "Clubleader": "rajagiri@123",
-        "admin": "rajagiri"
+    // accept credentials (case-insensitive username)
+    const creds = {
+        admin: "Admin123",
+        student: "Student123",
+        clubleader: "Club123"
     };
 
     const { username, password } = req.body;
-    if (users[username] && users[username] === password) {
-        res.json({ success: true, role: username });
+    if (!username || !password) return res.status(401).json({ success: false, message: "Invalid credentials" });
+
+    const uname = String(username).toLowerCase();
+    console.log(`Login attempt for user: ${uname}`);
+    if (creds[uname] && creds[uname] === password) {
+        // return role names that frontend expects
+        if (uname === 'clubleader') {
+            console.log('Login success: Clubleader');
+            return res.json({ success: true, role: 'Clubleader' });
+        }
+        console.log(`Login success: ${uname}`);
+        return res.json({ success: true, role: uname });
     } else {
+        console.log('Login failed for user:', uname);
         res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 });
@@ -133,9 +145,6 @@ app.put("/update-venue-status/:id", (req, res) => {
         res.sendStatus(200);
     });
 });
-
-// Start server
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
 // Edit Booking
 app.put("/edit-booking/:id", (req, res) => {
     let { event_name, club_name, from_date, to_date, venue } = req.body;
