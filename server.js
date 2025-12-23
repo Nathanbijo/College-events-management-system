@@ -9,7 +9,11 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cors());
 
-let db = new sqlite3.Database("events.db");
+let dbPath = path.join(__dirname, "events.db");
+let db = new sqlite3.Database(dbPath, (err) => {
+    if (err) console.error("Failed to open DB:", err);
+    else console.log(`Using database at ${dbPath}`);
+});
 
 // Create tables if not exists
 db.run(`CREATE TABLE IF NOT EXISTS events (
@@ -38,6 +42,8 @@ app.use("/css", express.static(path.join(__dirname, "css")));
 
 // Icons
 app.use("/icons", express.static(path.join(__dirname, "frontend/icons")));
+// Images used by frontend (backgrounds, etc.)
+app.use("/images", express.static(path.join(__dirname, "frontend/images")));
 
 /* =========================
    FRONTEND ROUTES (UniSync)
@@ -65,17 +71,19 @@ app.get("/approval", (req, res) => {
   res.sendFile(path.join(FRONTEND, "approval.html"));
 });
 
-app.post("/add-event", (req, res) => {
+app.post("/api/add-event", (req, res) => {
     let { name, date, time, venue, organizer, desc, type } = req.body;
+    console.log("POST /api/add-event payload:", { name, date, time, venue, organizer, desc, type });
 
-    db.run("INSERT INTO events (name, date, time, venue, organizer, desc, type) VALUES (?, ?, ?, ?, ?, ?, ?)", 
-        [name, date, time, venue, organizer, desc, type], function(err) {
+    // Quote the `desc` column name to avoid conflicts with SQL keywords
+    const sql = 'INSERT INTO events (name, date, time, venue, organizer, "desc", type) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.run(sql, [name, date, time, venue, organizer, desc, type], function(err) {
         if (err) {
-            console.error(err);
-            res.status(500).json({ error: "Failed to add event" });
-        } else {
-            res.json({ id: this.lastID });
+            console.error("DB Insert Error (/api/add-event):", err);
+            return res.status(500).json({ error: "Failed to add event", details: err.message });
         }
+        console.log("Event inserted with id", this.lastID);
+        res.status(201).json({ id: this.lastID });
     });
 });
 
@@ -83,24 +91,40 @@ app.post("/add-event", (req, res) => {
 
 // Login API (Simple authentication)
 app.post("/login", (req, res) => {
-    const users = {
-        "student": "rajagiri123",
-        "Clubleader": "rajagiri@123",
-        "admin": "rajagiri"
+    // accept credentials (case-insensitive username)
+    const creds = {
+        admin: "Admin123",
+        student: "Student123",
+        clubleader: "Club123"
     };
 
     const { username, password } = req.body;
-    if (users[username] && users[username] === password) {
-        res.json({ success: true, role: username });
+    if (!username || !password) return res.status(401).json({ success: false, message: "Invalid credentials" });
+
+    const uname = String(username).toLowerCase();
+    console.log(`Login attempt for user: ${uname}`);
+    if (creds[uname] && creds[uname] === password) {
+        // return role names that frontend expects
+        if (uname === 'clubleader') {
+            console.log('Login success: Clubleader');
+            return res.json({ success: true, role: 'Clubleader' });
+        }
+        console.log(`Login success: ${uname}`);
+        return res.json({ success: true, role: uname });
     } else {
+        console.log('Login failed for user:', uname);
         res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 });
 
 
-// Get all events (for all users)
-app.get("/events", (req, res) => {
+// Get all events (API)
+app.get("/api/events", (req, res) => {
     db.all("SELECT * FROM events", [], (err, rows) => {
+        if (err) {
+            console.error("DB Read Error (/api/events):", err);
+            return res.status(500).json({ error: "Failed to read events" });
+        }
         res.json(rows);
     });
 });
@@ -131,9 +155,6 @@ app.put("/update-venue-status/:id", (req, res) => {
         res.sendStatus(200);
     });
 });
-
-// Start server
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
 // Edit Booking
 app.put("/edit-booking/:id", (req, res) => {
     let { event_name, club_name, from_date, to_date, venue } = req.body;
@@ -146,12 +167,12 @@ app.put("/edit-booking/:id", (req, res) => {
         }
     );
 });
-app.put("/edit-event/:id", (req, res) => {
+app.put("/api/edit-event/:id", (req, res) => {
     let { name, date, time, venue, organizer, desc, type } = req.body;
     let id = req.params.id;
 
     db.run(
-        "UPDATE events SET name = ?, date = ?, time = ?, venue = ?, organizer = ?, desc = ?, type = ? WHERE id = ?",
+        'UPDATE events SET name = ?, date = ?, time = ?, venue = ?, organizer = ?, "desc" = ?, type = ? WHERE id = ?',
         [name, date, time, venue, organizer, desc, type, id],
         function (err) {
             if (err) {
@@ -172,25 +193,9 @@ app.delete("/delete-booking/:id", (req, res) => {
         res.sendStatus(200);
     });
 });
-async function editBooking(id, eventName, clubName, venue, fromDate, toDate) {
-    document.getElementById("eventName").value = eventName;
-    document.getElementById("clubName").value = clubName;
-    document.getElementById("venueSelect").value = venue;
-    document.getElementById("fromDate").value = fromDate;
-    document.getElementById("toDate").value = toDate;
-
-    await fetch(`http://localhost:3000/edit-booking/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ event_name: eventName, club_name: clubName, from_date: fromDate, to_date: toDate, venue })
-    });
-
-    alert("Booking updated!");
-    loadVenues();
-}
 
 // Delete Event
-app.delete("/delete-event/:id", (req, res) => {
+app.delete("/api/delete-event/:id", (req, res) => {
     let id = req.params.id;
     db.run("DELETE FROM events WHERE id = ?", [id], function(err) {
         if (err) {
@@ -203,13 +208,7 @@ app.delete("/delete-event/:id", (req, res) => {
 });
 
 
-async function deleteBooking(id) {
-    if (confirm("Are you sure you want to delete this booking?")) {
-        await fetch(`http://localhost:3000/delete-booking/${id}`, { method: "DELETE" });
-        alert("Booking deleted!");
-        loadVenues();
-    }
-}
+// Client-side helper functions were previously embedded here by mistake and removed.
 app.listen(PORT, () => {
   console.log(`✅ UniSync running at http://localhost:${PORT}`);
 });

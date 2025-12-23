@@ -5,86 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body {
-    animation: fadeIn 0.5s ease-in-out;
-}
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
+        :root{--accent:#2563eb;--card-bg:rgba(255,255,255,0.75)}
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: url('AJ_03837.jpg') no-repeat center center/cover;
-    font-family: Arial, sans-serif;
-    position: relative;
-    overflow: hidden; /* Ensure no unwanted scrolling */
-}
+        body{animation:fadeIn .45s ease-in-out;margin:0;font-family:Inter, Arial, sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 
-/* Ensure the blur overlay covers the entire screen */
-body::before {
-    content: "";
-    position: fixed; /* Ensures it stays full-screen */
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.4); /* Dark overlay (adjust opacity if needed) */
-    backdrop-filter: blur(10px); /* Apply full-screen blur */
-    z-index: 1;
-}
+        /* full-screen background image (replace with your college image path) */
+        body{background-image:url('/images/ke.jpg');background-size:cover;background-position:center center}
 
-/* Ensure the login container stays on top */
-.login-container {
-    position: relative;
-    z-index: 2;
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    width: 300px;
-}
+        /* translucent blurred overlay to frosted effect */
+        body::before{content:"";position:fixed;inset:0;background:rgba(0,0,0,0.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:1}
 
-        .login-container h2 {
-            margin-bottom: 1rem;
-            color: #333;
-            text-transform: uppercase;
-        }
-        .login-container input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .login-container button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007BFF;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        .login-container button:hover {
-            background-color: #0056b3;
-        }
+        /* login card */
+        .login-container{position:relative;z-index:2;width:360px;padding:28px;border-radius:14px;background:var(--card-bg);box-shadow:0 8px 30px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.5)}
+
+        .login-header{font-family:Lobster, cursive;font-size:40px;color:#0f172a;text-align:center;margin:0 0 8px}
+        .subtle{font-size:12px;color:#334155;margin-bottom:14px;text-align:center}
+
+        form .field{display:block;margin:10px 0}
+        label{display:block;font-size:13px;color:#334155;margin-bottom:6px}
+        input[type=text],input[type=password]{width:100%;padding:11px 12px;border-radius:8px;border:1px solid rgba(15,23,42,.08);background:rgba(255,255,255,0.9);box-sizing:border-box;font-size:14px}
+
+        .btn{display:inline-block;width:100%;padding:10px 12px;border-radius:8px;background:linear-gradient(180deg,var(--accent),#1e40af);color:white;border:none;cursor:pointer;margin-top:8px;font-weight:600}
+        .btn:active{transform:translateY(1px)}
+
+        .meta{font-size:13px;color:#475569;text-align:center;margin-top:12px}
+        .meta a{color:var(--accent);text-decoration:underline}
+
+        @media (max-width:420px){.login-container{width:92%;padding:18px}.login-header{font-size:32px}}
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
+    <div class="login-container" role="main">
+        <h1 class="login-header">LOGIN</h1>
+        <p class="subtle">Please sign in to continue</p>
+
+        <form id="loginForm" autocomplete="on">
+            <div class="field">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="e.g. Arthur" required>
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+            </div>
+
+            <button class="btn" type="submit">Sign in</button>
         </form>
+
+        <div class="meta">New here? <a href="/create-account">Create an account</a></div>
     </div>
     <script>
         document.getElementById("loginForm").addEventListener("submit", async function(event) {
