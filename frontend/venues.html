@@ -15,7 +15,7 @@
         .left-col{flex:1;display:flex;flex-direction:column;gap:12px;overflow:hidden}
 
         /* Sticky filter bar */
-        .filter-bar{position:sticky;top:var(--nav-height);background:rgba(255,255,255,0.98);padding:18px;border-radius:12px;box-shadow:var(--shadow);display:flex;gap:12px;align-items:center;z-index:50}
+        .filter-bar{position:sticky;top:8px;background:rgba(255,255,255,0.98);padding:18px;border-radius:12px;box-shadow:var(--shadow);display:flex;gap:12px;align-items:center;z-index:50}
         .filter-bar .control{min-width:0;flex:1;padding:12px 14px;font-size:15px}
 
         /* Grid that fills remaining space without causing page scroll */
@@ -66,6 +66,15 @@
         /* Ensure small screens degrade gracefully */
         @media (max-width:1200px){.venue-grid{grid-template-columns:repeat(2,1fr)}}
         @media (max-width:720px){.venue-grid{grid-template-columns:repeat(1,1fr)}.page-wrap{flex-direction:column;height:calc(100vh - var(--nav-height));padding:12px}.right-col{width:100%}.booking-panel{position:relative}}
+
+        /* Bookings modal */
+        .modal-overlay{position:fixed;inset:0;background:rgba(12,18,30,0.45);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:2000}
+        .bookings-modal{background:white;border-radius:12px;max-width:900px;width:92%;max-height:80vh;overflow:auto;padding:18px;box-shadow:0 20px 60px rgba(2,6,23,0.4);position:relative}
+        .bookings-modal h3{margin-top:0}
+        .bookings-modal table{width:100%;border-collapse:collapse}
+        .bookings-modal th{background:#f8fafc;padding:10px;text-align:left;border-bottom:1px solid #eee}
+        .bookings-modal td{padding:12px;border-bottom:1px solid #f1f5f9}
+        .bookings-close{position:absolute;right:12px;top:8px;border:none;background:transparent;font-size:18px;cursor:pointer}
     </style>
 </head>
 <body>
@@ -322,14 +331,54 @@
             bookingPanel.setAttribute('aria-hidden','true');
         });
 
-        // Toggle bookings list
-        document.getElementById('toggleBookings').addEventListener('click', () => {
-            const wrap = document.getElementById('bookingsWrap');
-            const btn = document.getElementById('toggleBookings');
-            if (wrap.style.display === 'none' || wrap.style.display === '') {
-                wrap.style.display = 'block'; btn.textContent = 'Hide';
-            } else { wrap.style.display = 'none'; btn.textContent = 'Show'; }
+        // Open bookings modal (replaces inline toggle)
+        document.getElementById('toggleBookings').addEventListener('click', async () => {
+            await loadBookings();
+            showBookingsModal();
         });
+
+        function showBookingsModal(){
+            // prevent duplicate
+            if (document.querySelector('.modal-overlay')) return;
+            const overlay = document.createElement('div'); overlay.className = 'modal-overlay';
+            const modal = document.createElement('div'); modal.className = 'bookings-modal';
+
+            const closeBtn = document.createElement('button'); closeBtn.className = 'bookings-close'; closeBtn.innerHTML = '✕';
+            closeBtn.addEventListener('click', closeBookingsModal);
+            modal.appendChild(closeBtn);
+
+            const title = document.createElement('h3'); title.textContent = 'My Bookings'; modal.appendChild(title);
+
+            const table = document.createElement('table');
+            table.innerHTML = '<tr><th>Event</th><th>Club</th><th>From</th><th>To</th><th>Venue</th><th>Status</th><th>Actions</th></tr>';
+            currentBookings.forEach(b => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${escapeHtml(b.event_name)}</td><td>${escapeHtml(b.club_name)}</td><td>${b.from_date}</td><td>${b.to_date}</td><td>${escapeHtml(b.venue)}</td><td>${escapeHtml(b.status)}</td><td><button class="toggle-btn" onclick="editBooking(${b.id}, '${escapeJs(b.event_name)}', '${escapeJs(b.club_name)}', '${escapeJs(b.venue)}', '${b.from_date}', '${b.to_date}')">Edit</button> <button class="toggle-btn" onclick="deleteBooking(${b.id})">Delete</button></td>`;
+                table.appendChild(tr);
+            });
+
+            modal.appendChild(table);
+
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+
+            // close on overlay click outside modal
+            overlay.addEventListener('click', (e)=>{ if (e.target === overlay) closeBookingsModal(); });
+            // escape key
+            document.addEventListener('keydown', escHandler);
+            function escHandler(e){ if (e.key === 'Escape') closeBookingsModal(); }
+
+            // store handler so it can be removed
+            overlay._escHandler = escHandler;
+        }
+
+        function closeBookingsModal(){
+            const overlay = document.querySelector('.modal-overlay');
+            if (!overlay) return;
+            const escHandler = overlay._escHandler;
+            if (escHandler) document.removeEventListener('keydown', escHandler);
+            overlay.remove();
+        }
 
         // Inline non-blocking message area (top-right small toast)
         function showPanelMessage(text, timeout=2000) {
