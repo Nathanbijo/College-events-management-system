@@ -1,109 +1,151 @@
-# 🎓 Event and Venue Management System
+---
 
-The **Event and Venue Management System** is a full-stack web application designed for colleges to streamline **event organization**, **venue booking**, and **administrative approvals**. It provides a simple, role-based login system that allows **students**, **club leaders**, and **administrators** to collaborate effectively while ensuring smooth scheduling and transparency.
+## 🎓 Event and Venue Management System
+
+The **Event and Venue Management System** is a full-stack web application designed to **digitize and streamline event organization and venue allocation** within academic institutions. The system enables structured collaboration between students, club leaders, and administrators through **role-based workflows**, ensuring transparent scheduling, controlled approvals, and efficient venue utilization.
+
+The platform replaces manual coordination with a centralized system for **event creation, venue booking, approval management, and event visibility**, reducing conflicts and administrative overhead.
 
 ---
 
-## 🧭 Purpose
+## 🧠 Project Overview
 
-The goal of the system is to **digitize and automate event management** within an academic environment. It minimizes manual coordination by introducing structured event creation, venue request, and approval workflows.
+In college environments, event planning and venue booking are often handled manually through informal communication channels, leading to:
+
+* Scheduling conflicts and double bookings
+* Lack of approval traceability
+* Poor visibility of upcoming events
+* Administrative overhead and delays
+
+The Event and Venue Management System addresses these issues by introducing **clearly defined roles, approval pipelines, and structured data management**, allowing events and venues to be managed in a reliable and auditable manner.
 
 ---
 
-## 🧩 Key Features
+## ❓ Motivation and Problem Statement
 
-### 🧑‍🎓 **Student Role**
+Academic institutions frequently face the following challenges:
 
-* View all upcoming and approved events.
-* Access detailed event information (name, date, time, venue, and organizer).
-* Read-only access for event viewing.
+* No centralized system for event and venue coordination
+* Manual approval processes prone to delays and miscommunication
+* Difficulty tracking venue availability across dates
+* Limited transparency for students regarding approved events
 
-🪪 **Login Credentials:**
+This system provides a systematic solution by offering:
+
+* Digitized event creation and venue request workflows
+* Role-based access control and approval mechanisms
+* Conflict-free venue booking with validation logic
+* Centralized visibility of approved and upcoming events
+
+---
+
+## 🚀 Key Functional Features
+
+### 1. Role-Based Access System
+
+The system supports three distinct user roles, each with clearly defined responsibilities:
+
+#### 🧑‍🎓 Student
+
+* View all approved and upcoming events
+* Access event details including date, time, venue, and organizer
+* Read-only access to ensure data integrity
+
+#### 🧑‍💼 Club Leader
+
+* Create and manage events
+* Submit venue booking requests for events
+* Edit or delete events prior to administrative approval
+* Track booking status (*Pending*, *Approved*, *Rejected*)
+
+#### 👨‍💼 Administrator
+
+* Review and approve or reject venue booking requests
+* Manage overall venue availability
+* Maintain administrative oversight of events and bookings
+
+---
+
+### 2. Secure Authentication & Authorization
+
+* Centralized login system with role-based redirection
+* Backend validation of credentials via REST API endpoints
+* UI rendering based on authenticated user role
+* Controlled access to protected routes and features
+
+---
+
+### 3. Event Management
+
+* Club leaders can create, update, and remove events
+* Events categorized by type (*Games*, *Sports*, *Arts*, *Workshop*)
+* Automatic event status classification (*Upcoming*, *Ongoing*, *Completed*)
+* Structured storage of event metadata for consistency
+
+---
+
+### 4. Venue Booking & Approval Workflow
+
+* Interactive venue selection with area-based filtering
+* Date-range validation to prevent overlapping bookings
+* Admin-controlled approval or rejection of venue requests
+* Status-driven visibility of events across user dashboards
+
+---
+
+### 5. Dashboard & User Interfaces
+
+* **Student Dashboard:** View-only access to approved events
+* **Club Leader Dashboard:** Event management and venue booking
+* **Admin Dashboard:** Centralized venue approval and oversight panel
+* Role-based navigation and workflow isolation
+
+---
+
+## 🧩 System Workflow (High-Level Process Flow)
+
+Student Views Approved Events
+  ↓
+Club Leader Creates Event & Requests Venue
+  ↓
+Admin Reviews Booking Request
+  ↓
+Approval / Rejection Decision
+  ↓
+Approved Events Become Publicly Visible
+
+---
+
+## 🏗️ System Architecture
 
 ```
-Username: student  
-Password: Student123
+┌────────────────────────────┐
+│        Frontend UI         │
+│   (HTML, CSS, JavaScript)  │
+└────────────┬───────────────┘
+             │
+┌────────────▼───────────────┐
+│      Express Backend       │
+│   (REST APIs & Logic)      │
+└────────────┬───────────────┘
+             │
+        ┌────▼────┐
+        │ SQLite  │
+        │Database │
+        └─────────┘
 ```
 
 ---
 
-### 🧑‍💼 **Club Leader Role**
+## 🧰 Technologies Employed
 
-* Create new events and request venue bookings.
-* Edit or delete their own events prior to admin approval.
-* Track booking status: *Pending*, *Approved*, or *Rejected*.
-
-🪪 **Login Credentials:**
-
-```
-Username: Clubleader  
-Password: Club123
-```
-
----
-
-### 👨‍💼 **Admin Role**
-
-* View and approve or reject venue booking requests.
-* Manage overall venue availability.
-* Access and manage the event list for administrative oversight.
-
-🪪 **Login Credentials:**
-
-```
-Username: admin  
-Password: Admin123
-```
-
----
-
-## ⚙️ System Workflow
-
-1. **Student** logs in to view upcoming events.
-2. **Club Leader** submits a new event and requests a venue booking.
-3. **Admin** reviews pending requests and approves or rejects them.
-4. Approved events automatically become visible to all users.
-
----
-
-## 🧱 Core Modules
-
-### 1. **Login & Authentication**
-
-* Secure login page with three distinct user roles.
-* Role-based UI rendering after login.
-* Credentials validated through backend API (`/login` endpoint).
-
-### 2. **Event Management**
-
-* Club Leaders can create, edit, and delete events.
-* Events are categorized by type (*Games*, *Sports*, *Arts*, *Workshop*).
-* Automatic status display: *Upcoming*, *Ongoing*, *Completed*.
-
-### 3. **Venue Booking**
-
-* Interactive venue selection with area-based filtering.
-* Date range validation ensures no overlapping bookings.
-* Admin can approve or reject bookings directly through a dedicated interface.
-
-### 4. **Dashboard**
-
-* **Home Page:** Role-based redirection to correct module (Admin, Club Leader, Student).
-* **Club Leader:** Access to venue booking and event management.
-* **Admin:** Venue approval dashboard.
-* **Student:** View-only events page.
-
----
-
-## 🧰 Technology Stack
-
-| Layer             | Technology                           |
-| ----------------- | ------------------------------------ |
-| **Frontend**      | HTML5, CSS3, JavaScript              |
-| **Backend**       | Node.js with Express.js              |
-| **Database**      | SQLite                               |
-| **Server**        | Localhost / XAMPP / Node environment |
-| **Communication** | REST APIs with `fetch()`             |
+| System Layer  | Technology                   |
+| ------------- | ---------------------------- |
+| Frontend      | HTML5, CSS3, JavaScript      |
+| Backend       | Node.js, Express.js          |
+| Database      | SQLite                       |
+| Communication | REST APIs (`fetch`)          |
+| Deployment    | Localhost / Node Environment |
 
 ---
 
@@ -111,88 +153,78 @@ Password: Admin123
 
 ### **Table: events**
 
-| Field     | Type         | Description                                 |
-| --------- | ------------ | ------------------------------------------- |
-| id        | INTEGER (PK) | Unique event ID                             |
-| name      | TEXT         | Event name                                  |
-| date      | TEXT         | Date of event                               |
-| time      | TEXT         | Event time                                  |
-| venue     | TEXT         | Venue name                                  |
-| organizer | TEXT         | Organizing club                             |
-| desc      | TEXT         | Event description                           |
-| type      | TEXT         | Event category (Games/Sports/Arts/Workshop) |
+| Field     | Type         | Description             |
+| --------- | ------------ | ----------------------- |
+| id        | INTEGER (PK) | Unique event identifier |
+| name      | TEXT         | Event name              |
+| date      | TEXT         | Event date              |
+| time      | TEXT         | Event time              |
+| venue     | TEXT         | Venue name              |
+| organizer | TEXT         | Organizing club         |
+| desc      | TEXT         | Event description       |
+| type      | TEXT         | Event category          |
+
+---
 
 ### **Table: venues**
 
-| Field      | Type         | Description                                        |
-| ---------- | ------------ | -------------------------------------------------- |
-| id         | INTEGER (PK) | Unique booking ID                                  |
-| event_name | TEXT         | Event name                                         |
-| club_name  | TEXT         | Club requesting booking                            |
-| from_date  | TEXT         | Booking start date                                 |
-| to_date    | TEXT         | Booking end date                                   |
-| venue      | TEXT         | Requested venue                                    |
-| status     | TEXT         | Booking status (*Pending*, *Approved*, *Rejected*) |
+| Field      | Type         | Description                                  |
+| ---------- | ------------ | -------------------------------------------- |
+| id         | INTEGER (PK) | Unique booking identifier                    |
+| event_name | TEXT         | Associated event                             |
+| club_name  | TEXT         | Requesting club                              |
+| from_date  | TEXT         | Booking start date                           |
+| to_date    | TEXT         | Booking end date                             |
+| venue      | TEXT         | Requested venue                              |
+| status     | TEXT         | Booking status (*Pending/Approved/Rejected*) |
 
 ---
 
-## 🧩 Installation and Setup
+## ⚙️ Deployment and Setup Instructions
 
-1. **Clone the repository**
+### Prerequisites
 
-   ```bash
-   git clone https://github.com/your-username/event-venue-management.git
-   cd event-venue-management
-   ```
+* Node.js
+* npm
 
-2. **Install dependencies**
+### Execution
 
-   ```bash
-   npm install express sqlite3 cors
-   ```
+```bash
+git clone https://github.com/your-username/event-venue-management.git
+cd event-venue-management
+npm install express sqlite3 cors
+node server.js
+```
 
-3. **Start the backend server**
-
-   ```bash
-   node server.js
-   ```
-
-   * The server runs on: **[http://localhost:3000](http://localhost:3000)**
-
-4. **Run the frontend**
-
-   * Open `index.html` in your browser.
-   * Ensure your browser allows requests to `http://localhost:3000`.
+* Backend runs on: **[http://localhost:3000](http://localhost:3000)**
+* Frontend served via `index.html`
 
 ---
 
-## 💻 Usage Guide
+## 💡 Demonstration Workflow
 
-1. **Login**
-
-   * Use provided credentials to access different user dashboards.
-
-2. **Club Leader Dashboard**
-
-   * Go to “Book Venue” to submit venue requests.
-   * Manage events in “Manage Events” section.
-
-3. **Admin Dashboard**
-
-   * Navigate to “Approve Venues” to manage booking requests.
-
-4. **Student Dashboard**
-
-   * View all approved and upcoming events.
+* User logs in with role-based credentials
+* Club leader creates an event and submits a venue request
+* Admin reviews and approves/rejects the request
+* Approved events become visible to all students
 
 ---
 
 ## 🚀 Future Enhancements
 
-* Email / SMS notifications for approvals.
-* Calendar-based venue availability visualization.
-* Search and filtering system for events.
-* Multi-user authentication with database-stored credentials.
-* Improved UI with responsive design.
+* Email / SMS notifications for approvals
+* Calendar-based venue availability visualization
+* Advanced event search and filtering
+* Persistent multi-user authentication
+* Responsive UI improvements
+
+---
+
+## 👨‍💻 Development Team
+
+**Event & Venue Management System Developers**
+An academic project focused on **role-based system design, workflow automation, and structured data management**.
+
+© 2025 — All Rights Reserved
 
 ---
